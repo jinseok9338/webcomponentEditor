@@ -1,9 +1,5 @@
 import { calculateDistance } from "../../../utils/canvas";
-import {
-  addEvent,
-  addStyleElement,
-  getElementInfo,
-} from "../../../utils/global";
+import { addStyleElement, getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../context/AppContext";
 
 export class SelectElementUtils {

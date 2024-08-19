@@ -61,11 +61,11 @@ export class CanvasComponent extends HTMLElement {
     this.addEventListener("mousemove", this.mouseHandler.bind(this));
   }
 
-  mouseOutHandler(event: MouseEvent) {
+  mouseOutHandler() {
     this.locateClosestElementUtils.hideBoxVis();
   }
 
-  public scrollHandler(e: Event) {
+  public scrollHandler() {
     if (!this.appContext.scrollTimeout) {
       this.locateClosestElementUtils.onScrollStart();
     }
