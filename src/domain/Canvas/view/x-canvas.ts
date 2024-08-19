@@ -58,20 +58,20 @@ export class CanvasComponent extends HTMLElement {
     this.addEventListener("mouseup", this.onMouseUp.bind(this));
   }
 
-  connectedCallback() {
-    document.addEventListener(
-      "scroll",
-      this.locateClosestElementUtils.scrollHandler
-    );
-    document.addEventListener(
-      "mouseout",
-      this.locateClosestElementUtils.mouseOutHandler
-    );
-    this.addEventListener(
-      "mousemove",
-      this.locateClosestElementUtils.mouseHandler.bind(this)
-    );
-  }
+  // connectedCallback() {
+  //   document.addEventListener(
+  //     "scroll",
+  //     this.locateClosestElementUtils.scrollHandler
+  //   );
+  //   document.addEventListener(
+  //     "mouseout",
+  //     this.locateClosestElementUtils.mouseOutHandler
+  //   );
+  //   this.addEventListener(
+  //     "mousemove",
+  //     this.locateClosestElementUtils.mouseHandler.bind(this)
+  //   );
+  // }
 
   /**
    * Event handler for mousemove event.

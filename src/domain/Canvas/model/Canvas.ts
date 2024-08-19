@@ -1,5 +1,9 @@
 import { calculateDistance } from "../../../utils/canvas";
-import { addStyleElement, getElementInfo } from "../../../utils/global";
+import {
+  addEvent,
+  addStyleElement,
+  getElementInfo,
+} from "../../../utils/global";
 import { AppContext, getAppContext } from "../../context/AppContext";
 
 export class SelectElementUtils {
@@ -40,14 +44,18 @@ export class LocateClosestElementUtils {
 
   constructor() {
     this.appContext = getAppContext();
+    this.AddOutliners();
+    addEvent(document.body, "mouseover", this.mouseHandler);
+    addEvent(window, "scroll", this.scrollHandler);
+    addEvent(document.body, "mouseout", this.mouseOutHandler);
   }
 
-  clearScrollTimer() {
+  public clearScrollTimer() {
     clearTimeout(this.appContext.scrollTimeout);
     this.appContext.scrollTimeout = null;
   }
 
-  mouseHandler(e: MouseEvent) {
+  public mouseHandler(e: MouseEvent) {
     const target = e.target as HTMLElement;
     this.clearScrollTimer();
 
@@ -56,7 +64,7 @@ export class LocateClosestElementUtils {
     this.showInfo(info);
   }
 
-  hideBoxVis() {
+  public hideBoxVis() {
     if (!this.appContext.boxvis) {
       return;
     }
@@ -80,11 +88,11 @@ export class LocateClosestElementUtils {
     this.appContext.boxvis.box.inner.style.display = "none";
   }
 
-  mouseOutHandler(e: MouseEvent) {
+  public mouseOutHandler(e: MouseEvent) {
     this.hideBoxVis();
   }
 
-  scrollHandler(e: Event) {
+  public scrollHandler(e: Event) {
     if (!this.appContext.scrollTimeout) {
       this.onScrollStart();
     }
@@ -94,11 +102,12 @@ export class LocateClosestElementUtils {
       this.appContext.scrollendDelay
     );
   }
-  onScrollStart() {
+
+  private onScrollStart() {
     this.hideBoxVis();
   }
 
-  onScrollEnd() {
+  private onScrollEnd() {
     this.clearScrollTimer();
     if (this.appContext.latestInfo) {
       this.appContext.latestInfo.box =
@@ -107,7 +116,7 @@ export class LocateClosestElementUtils {
     }
   }
 
-  showInfo(info: ReturnType<typeof getElementInfo>) {
+  private showInfo(info: ReturnType<typeof getElementInfo>) {
     const windowHeight =
       window.innerHeight ||
       document.documentElement.clientHeight ||
@@ -261,7 +270,7 @@ export class LocateClosestElementUtils {
       info.padding.right +
       "px";
   }
-  AddOutliners() {
+  public AddOutliners() {
     var styles =
       '.boxvis > div > div{pointer-events:none;position:fixed;z-index:2147483637;top:-10px;bottom:-10px;left:-10px;right:-10px}.boxvis:not(.noln) > div > div{border-width:1px;border-style:dashed}.boxvis > .mg > div{border-color:#e67700}.boxvis > .bd > div{border-color:#dcdc40}.boxvis > .pd > div{border-color:#00bb20}.boxvis > .bx > div{border-color:#0000e6}.boxvis > div > .o{z-index:2147483638;border:none;display:none}.boxvis:not(.nobg) > .mg > .o{background-color:rgba(255,153,0,0.125)}.boxvis:not(.nobg) > .pd > .o{background-color:rgba(0,140,64,0.125)}.boxvis:not(.nobg) > .bd > .o{background-color:rgba(255,255,0,0.125)}.boxvis:not(.nobg) > .bx > .o{background-color:rgba(0,100,255,0.35)}.boxvis > .i{box-shadow:0 0 4px -1px rgba(255,255,255,1);pointer-events:none;position:fixed;z-index:2147483638;background-color:#000;font-size:12px;padding:3px 8px 5px 10px;border-radius:4px;white-space:nowrap;display:none}.boxvis > .i:before{content:"";position:absolute;top:100%;left:10px;border:solid 6px transparent;border-top-color:#000}.boxvis > .i.top:before{top:-12px;border:solid 6px transparent;border-top-color:transparent;border-bottom-color:#000}.boxvis > .i.right:before{left:auto;right:10px}.boxvis > .i > .t{color:#FF74FF;font-weight:700}.boxvis > .i > .i{color:#FFB952}.boxvis > .i > .c{color:#75CFFF}.boxvis > .i > .d{font-size:10px;margin-left:3px;color:#CCC}';
     addStyleElement(styles);
