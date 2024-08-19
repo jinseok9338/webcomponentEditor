@@ -61,10 +61,6 @@ export class CanvasComponent extends HTMLElement {
     this.addEventListener("mousemove", this.mouseHandler.bind(this));
   }
 
-  // connectedCallback() {
-
-  // }
-
   mouseOutHandler(event: MouseEvent) {
     this.locateClosestElementUtils.hideBoxVis();
   }
