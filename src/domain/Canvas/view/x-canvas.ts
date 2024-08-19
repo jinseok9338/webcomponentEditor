@@ -1,40 +1,49 @@
 import { AppContext, getAppContext } from "../../context/AppContext";
-import { SelectElementUtils, LocateClosestElementUtils, MoveUpSelectedElementUtils } from "../model/Canvas";
-
-
+import {
+  SelectElementUtils,
+  LocateClosestElementUtils,
+  MoveUpSelectedElementUtils,
+} from "../model/Canvas";
 
 const testhtml = `
-<div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
+<div id="canvas" style="padding: 20px 10px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
 <div style="display: flex; gap: 10px;">
    <p>A basic avatar component in two sizes:</p>
+   <div>
    <img
-     style="width: 150px; height: 150px;"
+     style="width: 150px;"
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
       />
+   </div>
+   <div>
    <img
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-      style="width: 150px; height: 150px;"
+      style="width: 150px;"
       />
+   </div>
 </div>
 <div style="display: flex; gap: 10px;">
    <p>A basic avatar component in two sizes:</p>
+   <div>
    <img
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-      style="width: 150px; height: 150px;"
+      style="width: 150px; "
       />
+   </div>
+   <div>
    <img
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-      style="width: 150px; height: 150px;"
+      style="width: 150px; "
       />
+   </div>
 </div>
-</div> `;
+</div>`;
 
 export class CanvasComponent extends HTMLElement {
   private selectElementUtils: SelectElementUtils;
   private locateClosestElementUtils: LocateClosestElementUtils;
   private moveUpSelectedElementUtils: MoveUpSelectedElementUtils;
   private appContext: AppContext;
-
 
   constructor() {
     super();
@@ -44,17 +53,15 @@ export class CanvasComponent extends HTMLElement {
     this.moveUpSelectedElementUtils = new MoveUpSelectedElementUtils();
     this.appContext = getAppContext();
 
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mousedown", this.onMouseDown.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    this.addEventListener("mousemove", this.onMouseMove.bind(this));
+    this.addEventListener("mousedown", this.onMouseDown.bind(this));
+    this.addEventListener("mouseup", this.onMouseUp.bind(this));
   }
   /**
    * Event handler for mousemove event.
    * @param {MouseEvent} event - The mouse event object.
    */
   onMouseMove(event: MouseEvent) {
-
-
     if (!this.appContext.isDragging && !this.appContext.selectedElement) {
       return;
     }
@@ -67,6 +74,7 @@ export class CanvasComponent extends HTMLElement {
       );
       return;
     }
+
     this.locateClosestElementUtils.findTheClosestElement(clientX, clientY);
   }
 
@@ -86,6 +94,9 @@ export class CanvasComponent extends HTMLElement {
       this.appContext.isDragging = false;
       this.selectElementUtils.selectElement(event);
     }
+    this.locateClosestElementUtils.removeHighlightFromElement(
+      this.appContext.selectedElement
+    );
   }
 
   /**

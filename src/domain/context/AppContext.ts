@@ -4,6 +4,7 @@ export class AppContext extends HTMLElement {
   #closestElementWhileDragging: HTMLElement | null = null;
   #closestElmentWitoutDragging: HTMLElement | null = null;
   #closestBorder: string | null = null;
+  #isGuideLineVisible: boolean = false;
 
   get selectedElement() {
     return this.#selectedElement;
@@ -40,8 +41,11 @@ export class AppContext extends HTMLElement {
     this.#closestBorder = value;
   }
 
-  constructor() {
-    super();
+  get isGuideLineVisible() {
+    return this.#isGuideLineVisible;
+  }
+  set isGuideLineVisible(value: boolean) {
+    this.#isGuideLineVisible = value;
   }
 }
 

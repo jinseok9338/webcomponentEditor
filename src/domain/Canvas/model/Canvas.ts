@@ -12,7 +12,10 @@ export class SelectElementUtils {
    * @param {MouseEvent} event - The mouse event object.
    */
   selectElement(event: MouseEvent) {
-    const clickedElement = event.target as HTMLElement;
+    let clickedElement = event.target as HTMLElement;
+    if (clickedElement.tagName === "IMG") {
+      clickedElement = clickedElement.parentElement as HTMLElement;
+    }
 
     // Reset the previous selected element's box shadow if exists
     if (this.appContext.selectedElement) {
@@ -51,7 +54,8 @@ export class LocateClosestElementUtils {
         clientX >= rect.left &&
         clientX <= rect.right &&
         clientY >= rect.top &&
-        clientY <= rect.bottom
+        clientY <= rect.bottom &&
+        element.tagName !== "IMG"
       ) {
         this.appContext.closestElmentWitoutDragging = element as HTMLElement;
         minDistance = 0; // No need to calculate distance if cursor is inside the element
@@ -69,7 +73,7 @@ export class LocateClosestElementUtils {
     // Reset all borders for elements except the selected one
     elements.forEach((el) => {
       if (el !== this.appContext.selectedElement) {
-        (el as HTMLElement).style.boxShadow = "";
+        this.removeHighlightFromElement(el as HTMLElement);
       }
     });
 
@@ -80,9 +84,40 @@ export class LocateClosestElementUtils {
         this.appContext.selectedElement &&
       minDistance <= 30
     ) {
-      this.appContext.closestElmentWitoutDragging.style.boxShadow =
-        "0 0 0 2px #f00";
+      this.applyMarginPaddingStyles(
+        this.appContext.closestElmentWitoutDragging
+      );
+      this.highlightElementWithPseudo(
+        this.appContext.closestElmentWitoutDragging
+      );
     }
+  }
+
+  highlightElementWithPseudo(element: HTMLElement) {
+    // Add the class that triggers the pseudo-element border
+    element.classList.add("highlighted-element");
+  }
+
+  removeHighlightFromElement(element: HTMLElement) {
+    // Remove the class that triggers the pseudo-element border
+    element.classList.remove("highlighted-element");
+  }
+
+  applyMarginPaddingStyles(element: HTMLElement) {
+    // Get computed styles for the element
+    const style = window.getComputedStyle(element);
+
+    // Set custom properties (CSS variables) for padding
+    element.style.setProperty("--padding-top", style.paddingTop);
+    element.style.setProperty("--padding-left", style.paddingLeft);
+    element.style.setProperty("--padding-right", style.paddingRight);
+    element.style.setProperty("--padding-bottom", style.paddingBottom);
+
+    // Set custom properties (CSS variables) for margin
+    element.style.setProperty("--margin-top", style.marginTop);
+    element.style.setProperty("--margin-left", style.marginLeft);
+    element.style.setProperty("--margin-right", style.marginRight);
+    element.style.setProperty("--margin-bottom", style.marginBottom);
   }
 }
 
@@ -175,7 +210,7 @@ export class MoveUpSelectedElementUtils {
       } as const;
       const closestBorder = (
         Object.keys(distances) as Array<keyof typeof distances>
-      ).reduce((a, b) => (distances[a] < distances[b] ? a : b));
+      ).reduce((a, b) => (distances[a] < distances[b] ? a : b), "left");
 
       this.markTheClosestBorder(closestBorder);
     }
