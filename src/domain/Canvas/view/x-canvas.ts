@@ -1,3 +1,4 @@
+import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../context/AppContext";
 import {
   SelectElementUtils,
@@ -9,33 +10,32 @@ const testhtml = `
 <div id="canvas" style="padding: 20px 10px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
 <div style="display: flex; gap: 10px;">
    <p>A basic avatar component in two sizes:</p>
-   <div>
+
    <img
      style="width: 150px;"
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
       />
-   </div>
-   <div>
+
    <img
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
       style="width: 150px;"
       />
-   </div>
+
 </div>
 <div style="display: flex; gap: 10px;">
    <p>A basic avatar component in two sizes:</p>
-   <div>
+
    <img
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
       style="width: 150px; "
       />
-   </div>
-   <div>
+
+
    <img
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
       style="width: 150px; "
       />
-   </div>
+
 </div>
 </div>`;
 
@@ -56,28 +56,31 @@ export class CanvasComponent extends HTMLElement {
 
     this.addEventListener("mousedown", this.onMouseDown.bind(this));
     this.addEventListener("mouseup", this.onMouseUp.bind(this));
+    window.addEventListener("scroll", this.scrollHandler.bind(this));
+    this.addEventListener("mouseout", this.mouseOutHandler.bind(this));
+    this.addEventListener("mousemove", this.mouseHandler.bind(this));
   }
 
   // connectedCallback() {
-  //   document.addEventListener(
-  //     "scroll",
-  //     this.locateClosestElementUtils.scrollHandler
-  //   );
-  //   document.addEventListener(
-  //     "mouseout",
-  //     this.locateClosestElementUtils.mouseOutHandler
-  //   );
-  //   this.addEventListener(
-  //     "mousemove",
-  //     this.locateClosestElementUtils.mouseHandler.bind(this)
-  //   );
+
   // }
 
-  /**
-   * Event handler for mousemove event.
-   * @param {MouseEvent} event - The mouse event object.
-   */
-  onMouseMove(event: MouseEvent) {
+  mouseOutHandler(event: MouseEvent) {
+    this.locateClosestElementUtils.hideBoxVis();
+  }
+
+  public scrollHandler(e: Event) {
+    if (!this.appContext.scrollTimeout) {
+      this.locateClosestElementUtils.onScrollStart();
+    }
+
+    this.appContext.scrollTimeout = setTimeout(
+      this.locateClosestElementUtils.onScrollEnd,
+      this.appContext.scrollendDelay
+    );
+  }
+
+  mouseHandler(event: MouseEvent) {
     if (!this.appContext.isDragging && !this.appContext.selectedElement) {
       return;
     }
@@ -91,7 +94,12 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    // this.locateClosestElementUtils.mouseHandler(event);
+    const target = event.target as HTMLElement;
+    this.locateClosestElementUtils.clearScrollTimer();
+
+    const info = getElementInfo(target);
+    this.appContext.latestInfo = info;
+    this.locateClosestElementUtils.showInfo(info);
   }
 
   onMouseDown(event: MouseEvent) {

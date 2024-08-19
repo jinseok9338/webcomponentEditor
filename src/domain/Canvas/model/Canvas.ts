@@ -18,9 +18,9 @@ export class SelectElementUtils {
    */
   selectElement(event: MouseEvent) {
     let clickedElement = event.target as HTMLElement;
-    if (clickedElement.tagName === "IMG") {
-      clickedElement = clickedElement.parentElement as HTMLElement;
-    }
+    // if (clickedElement.tagName === "IMG") {
+    //   clickedElement = clickedElement.parentElement as HTMLElement;
+    // }
 
     // Reset the previous selected element's box shadow if exists
     if (this.appContext.selectedElement) {
@@ -45,23 +45,11 @@ export class LocateClosestElementUtils {
   constructor() {
     this.appContext = getAppContext();
     this.AddOutliners();
-    addEvent(document.body, "mouseover", this.mouseHandler);
-    addEvent(window, "scroll", this.scrollHandler);
-    addEvent(document.body, "mouseout", this.mouseOutHandler);
   }
 
   public clearScrollTimer() {
     clearTimeout(this.appContext.scrollTimeout);
     this.appContext.scrollTimeout = null;
-  }
-
-  public mouseHandler(e: MouseEvent) {
-    const target = e.target as HTMLElement;
-    this.clearScrollTimer();
-
-    const info = getElementInfo(target);
-    this.appContext.latestInfo = info;
-    this.showInfo(info);
   }
 
   public hideBoxVis() {
@@ -88,26 +76,11 @@ export class LocateClosestElementUtils {
     this.appContext.boxvis.box.inner.style.display = "none";
   }
 
-  public mouseOutHandler(e: MouseEvent) {
+  onScrollStart() {
     this.hideBoxVis();
   }
 
-  public scrollHandler(e: Event) {
-    if (!this.appContext.scrollTimeout) {
-      this.onScrollStart();
-    }
-
-    this.appContext.scrollTimeout = setTimeout(
-      this.onScrollEnd,
-      this.appContext.scrollendDelay
-    );
-  }
-
-  private onScrollStart() {
-    this.hideBoxVis();
-  }
-
-  private onScrollEnd() {
+  onScrollEnd() {
     this.clearScrollTimer();
     if (this.appContext.latestInfo) {
       this.appContext.latestInfo.box =
@@ -116,7 +89,7 @@ export class LocateClosestElementUtils {
     }
   }
 
-  private showInfo(info: ReturnType<typeof getElementInfo>) {
+  showInfo(info: ReturnType<typeof getElementInfo>) {
     const windowHeight =
       window.innerHeight ||
       document.documentElement.clientHeight ||
@@ -279,7 +252,10 @@ export class LocateClosestElementUtils {
       '<div class="mg"><div class="h"></div><div class="v"></div><div class="o"></div></div><div class="bd"><div class="h"></div><div class="v"></div><div class="o"></div></div><div class="pd"><div class="h"></div><div class="v"></div><div class="o"></div></div><div class="bx"><div class="h"></div><div class="v"></div><div class="o"></div></div><div class="i"></div>';
 
     var outlinerContainer = document.createElement("div");
-    //outlinerContainer.className = 'boxvis' + (query.noln ? ' noln' : '') + (query.nobg ? ' nobg' : '');
+    outlinerContainer.className =
+      "boxvis" +
+      (this.appContext.query?.noln ? " noln" : "") +
+      (this.appContext.query?.nobg ? " nobg" : "");
     document.body.appendChild(outlinerContainer);
 
     outlinerContainer.innerHTML = html;
