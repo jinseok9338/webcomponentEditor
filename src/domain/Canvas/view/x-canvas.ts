@@ -52,11 +52,27 @@ export class CanvasComponent extends HTMLElement {
     this.locateClosestElementUtils = new LocateClosestElementUtils();
     this.moveUpSelectedElementUtils = new MoveUpSelectedElementUtils();
     this.appContext = getAppContext();
+    this.locateClosestElementUtils.AddOutliners();
 
-    this.addEventListener("mousemove", this.onMouseMove.bind(this));
     this.addEventListener("mousedown", this.onMouseDown.bind(this));
     this.addEventListener("mouseup", this.onMouseUp.bind(this));
   }
+
+  connectedCallback() {
+    document.addEventListener(
+      "scroll",
+      this.locateClosestElementUtils.scrollHandler
+    );
+    document.addEventListener(
+      "mouseout",
+      this.locateClosestElementUtils.mouseOutHandler
+    );
+    this.addEventListener(
+      "mousemove",
+      this.locateClosestElementUtils.mouseHandler.bind(this)
+    );
+  }
+
   /**
    * Event handler for mousemove event.
    * @param {MouseEvent} event - The mouse event object.
@@ -75,7 +91,7 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    this.locateClosestElementUtils.findTheClosestElement(clientX, clientY);
+    // this.locateClosestElementUtils.mouseHandler(event);
   }
 
   onMouseDown(event: MouseEvent) {
@@ -94,9 +110,6 @@ export class CanvasComponent extends HTMLElement {
       this.appContext.isDragging = false;
       this.selectElementUtils.selectElement(event);
     }
-    this.locateClosestElementUtils.removeHighlightFromElement(
-      this.appContext.selectedElement
-    );
   }
 
   /**
