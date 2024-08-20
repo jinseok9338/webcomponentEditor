@@ -1,8 +1,8 @@
 import { registerCanvasComponent } from "./src/domain/Canvas/view/x-canvas";
-import { registerAppContext } from "./src/domain/context/AppContext";
+import { registerAppContext } from "./src/domain/App/context/AppContext";
 
 const app = () => {
-  registerCanvasComponent();
   registerAppContext();
+  registerCanvasComponent();
 };
 document.addEventListener("DOMContentLoaded", app);

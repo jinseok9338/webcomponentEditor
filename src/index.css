@@ -1,9 +1,6 @@
 /* generic minimal CSS reset
    inspiration: https://www.digitalocean.com/community/tutorials/css-minimal-css-reset */
 
-/* import canvas css */
-@import "./domain/Canvas/model/canvas.css";
-
 :root {
   box-sizing: border-box;
   line-height: 1.4;
