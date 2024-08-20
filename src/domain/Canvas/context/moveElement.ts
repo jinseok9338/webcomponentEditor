@@ -10,6 +10,16 @@ export class MoveUpSelectedElementUtils {
   }
 
   moveElement() {
+    // canvas 는 이동할 수 없다.
+    if (
+      this.appContext.selectedElement &&
+      this.isElementCanvas(this.appContext.selectedElement) &&
+      this.isOutsideTheCanvas(
+        this.appContext.closestElementWhileDragging as HTMLElement
+      )
+    ) {
+      return;
+    }
     if (
       this.appContext.closestBorder === "top" ||
       this.appContext.closestBorder === "left"
@@ -24,12 +34,19 @@ export class MoveUpSelectedElementUtils {
     }
   }
 
-  /**
-   * Log the closest border of an element based on cursor position.
-   * @param {number} clientX - The x-coordinate of the cursor.
-   * @param {number} clientY - The y-coordinate of the cursor.
+  isElementCanvas(element: HTMLElement) {
+    return element.id === "canvas";
+  }
 
-   */
+  isOutsideTheCanvas(element: HTMLElement): boolean {
+    const canvas = document.getElementById("canvas");
+    if (!canvas) {
+      console.warn("Canvas element not found");
+      return false;
+    }
+    return element.contains(canvas);
+  }
+
   findTheClosestBorderAndMarkIt(clientX: number, clientY: number) {
     // Get all elements inside the component
     const elements = this.appContext.querySelectorAll("*");
@@ -44,21 +61,20 @@ export class MoveUpSelectedElementUtils {
     elements.forEach((element) => {
       const rect = element.getBoundingClientRect();
 
-      // Check if the cursor is within the element's bounds
-      // if the element is the child element of the selected element then it is not the closest element
       if (
         clientX >= rect.left &&
         clientX <= rect.right &&
         clientY >= rect.top &&
         clientY <= rect.bottom &&
-        !this.isTheElemnetTheChildOfTheSelectedElement(element as HTMLElement)
+        !this.isTheElemnetTheChildOfTheSelectedElement(
+          element as HTMLElement
+        ) &&
+        !this.isOutsideTheCanvas(element as HTMLElement)
       ) {
         this.appContext.closestElementWhileDragging = element as HTMLElement;
-        minDistance = 0; // No need to calculate distance if cursor is inside the element
+        minDistance = 0;
         return;
       }
-
-      // If the cursor is outside, calculate the distance to the nearest edge
 
       const distance = calculateDistance(clientX, clientY, rect);
       if (distance < minDistance) {
@@ -140,8 +156,11 @@ export class MoveUpSelectedElementUtils {
     ) {
       return;
     }
-    const clonedSelectedElement =
-      this.appContext.selectedElement.cloneNode(true);
+    // 클론 한 엘리먼트의 boxShadow 제거
+    const clonedSelectedElement = this.appContext.selectedElement.cloneNode(
+      true
+    ) as HTMLElement;
+    clonedSelectedElement.style.boxShadow = "";
     if (this.appContext.closestElementWhileDragging.parentNode) {
       this.appContext.closestElementWhileDragging.parentNode.insertBefore(
         clonedSelectedElement,
@@ -167,8 +186,10 @@ export class MoveUpSelectedElementUtils {
       return;
     }
 
-    const clonedSelectedElement =
-      this.appContext.selectedElement.cloneNode(true);
+    const clonedSelectedElement = this.appContext.selectedElement.cloneNode(
+      true
+    ) as HTMLElement;
+    clonedSelectedElement.style.boxShadow = "";
     if (this.appContext.closestElementWhileDragging.parentNode) {
       this.appContext.closestElementWhileDragging.parentNode.insertBefore(
         clonedSelectedElement,

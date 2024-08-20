@@ -44,15 +44,16 @@ export class CanvasComponent extends HTMLElement {
   }
 
   mouseHandler(event: MouseEvent) {
-    if (!this.appContext.isDragging && !this.appContext.selectedElement) {
-      return;
-    }
     const { clientX, clientY } = event;
     if (this.appContext.isDragging && this.appContext.selectedElement) {
       this.moveUpSelectedElementUtils.findTheClosestBorderAndMarkIt(
         clientX,
         clientY
       );
+      return;
+    }
+
+    if (this.appContext.selectedElement) {
       return;
     }
 
@@ -67,6 +68,7 @@ export class CanvasComponent extends HTMLElement {
   onMouseDown(event: MouseEvent) {
     if (!this.appContext.selectedElement) {
       this.selectElementUtils.selectElement(event);
+      this.locateClosestElementUtils.hideBoxVis();
       return;
     }
 
@@ -90,9 +92,11 @@ export class CanvasComponent extends HTMLElement {
 
     if (this.appContext.closestBorder) {
       this.moveUpSelectedElementUtils.moveElement();
+      this.selectElementUtils.clearSelectedElement();
     }
 
     this.appContext.closestBorder = null;
+
     event.preventDefault();
   }
 }

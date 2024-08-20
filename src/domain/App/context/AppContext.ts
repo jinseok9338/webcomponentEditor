@@ -12,6 +12,7 @@ export class AppContext extends HTMLElement {
   latestInfo: ReturnType<typeof getElementInfo> | null = null;
   scrollTimeout: any = null;
   scrollendDelay = 250;
+  isTextAndImageNotSelectable = true;
   query = {
     noln: false,
     nobg: false,
@@ -45,7 +46,6 @@ export class AppContext extends HTMLElement {
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
       style="width: 150px; "
       />
-
 </div>
 </div>`;
 

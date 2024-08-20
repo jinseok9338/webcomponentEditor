@@ -12,9 +12,10 @@ export class SelectElementUtils {
    */
   selectElement(event: MouseEvent) {
     let clickedElement = event.target as HTMLElement;
-    // if (clickedElement.tagName === "IMG") {
-    //   clickedElement = clickedElement.parentElement as HTMLElement;
-    // }
+    // canvas 는 선택 할 수가 없다.
+    if (this.isTheElementCanvas(clickedElement)) {
+      return;
+    }
 
     // Reset the previous selected element's box shadow if exists
     if (this.appContext.selectedElement) {
@@ -26,6 +27,10 @@ export class SelectElementUtils {
     this.appContext.selectedElement = clickedElement;
     clickedElement.style.boxShadow = "0 0 0 2px #00f";
     clickedElement.style.cursor = "grab";
+  }
+
+  isTheElementCanvas(element: HTMLElement) {
+    return element.id === "canvas";
   }
 
   clearSelectedElement() {
