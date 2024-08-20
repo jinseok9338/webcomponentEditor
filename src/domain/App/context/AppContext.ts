@@ -2,8 +2,8 @@ import { getElementInfo } from "../../../utils/global";
 import { Boxvis } from "./type";
 
 export class AppContext extends HTMLElement {
-  selectedElement: HTMLElement | null = null; // Track the currently selected element
-  isDragging = false; // Track if the user is dragging an element
+  selectedElement: HTMLElement | null = null;
+  isDragging = false;
   closestElementWhileDragging: HTMLElement | null = null;
   closestElmentWitoutDragging: HTMLElement | null = null;
   closestBorder: string | null = null;

@@ -1,8 +1,16 @@
-import { calculateDistance } from "../../../utils/canvas";
+import {
+  calculateDistance,
+  isElementMenu,
+  isElementMenuContainer,
+  isElementParentMenuContainer,
+  removeElement,
+} from "../../../utils/canvas";
 import {
   CANVAS,
   Direction,
+  MENU_CONTAINER,
   minimalDistanceToshow,
+  targetBorderStyle,
 } from "../../../utils/consts";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
@@ -28,12 +36,20 @@ export class MoveUpSelectedElementUtils {
       this.appContext.closestBorder === Direction.TOP ||
       this.appContext.closestBorder === Direction.LEFT
     ) {
+      const menuContainer = document.getElementById(MENU_CONTAINER);
+      if (menuContainer) {
+        removeElement(menuContainer);
+      }
       this.moveToTheFront();
     }
     if (
       this.appContext.closestBorder === Direction.RIGHT ||
       this.appContext.closestBorder === Direction.BOTTOM
     ) {
+      const menuContainer = document.getElementById(MENU_CONTAINER);
+      if (menuContainer) {
+        removeElement(menuContainer);
+      }
       this.moveToTheBack();
     }
   }
@@ -73,7 +89,10 @@ export class MoveUpSelectedElementUtils {
         !this.isTheElemnetTheChildOfTheSelectedElement(
           element as HTMLElement
         ) &&
-        !this.isOutsideTheCanvas(element as HTMLElement)
+        !this.isOutsideTheCanvas(element as HTMLElement) &&
+        // element should not be the menu
+        !isElementMenuContainer(element as HTMLElement) &&
+        !isElementParentMenuContainer(element as HTMLElement)
       ) {
         this.appContext.closestElementWhileDragging = element as HTMLElement;
         minDistance = 0;
@@ -122,7 +141,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderLeft =
-          "3px solid #7FFFD4";
+          targetBorderStyle;
         this.appContext.closestBorder = Direction.LEFT;
         break;
       case Direction.RIGHT:
@@ -130,7 +149,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderRight =
-          "3px solid #7FFFD4";
+          targetBorderStyle;
 
         this.appContext.closestBorder = Direction.RIGHT;
         break;
@@ -139,7 +158,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderTop =
-          "3px solid #7FFFD4";
+          targetBorderStyle;
         this.appContext.closestBorder = Direction.TOP;
         break;
       case Direction.BOTTOM:
@@ -147,7 +166,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderBottom =
-          "3px solid #7FFFD4";
+          targetBorderStyle;
         this.appContext.closestBorder = Direction.BOTTOM;
     }
   }
@@ -163,7 +182,7 @@ export class MoveUpSelectedElementUtils {
     const clonedSelectedElement = this.appContext.selectedElement.cloneNode(
       true
     ) as HTMLElement;
-    clonedSelectedElement.style.boxShadow = "";
+
     if (this.appContext.closestElementWhileDragging.parentNode) {
       this.appContext.closestElementWhileDragging.parentNode.insertBefore(
         clonedSelectedElement,

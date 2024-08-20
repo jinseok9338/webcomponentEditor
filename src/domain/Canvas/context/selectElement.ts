@@ -1,4 +1,13 @@
-import { CANVAS, MENU, MENU_CONTAINER } from "../../../utils/consts";
+import {
+  CANVAS,
+  MENU,
+  MENU_CONTAINER,
+  MENU_DELETE,
+  MENU_DRAG,
+  MENU_DUPLICATE,
+  MENU_GO_UP,
+  MENU_MORE,
+} from "../../../utils/consts";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
 function createMenuElement() {
@@ -36,12 +45,19 @@ function createMenuElement() {
     "M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z",
   ];
 
-  buttonIcons.forEach((iconPath) => {
+  const buttonId = [
+    MENU_GO_UP,
+    MENU_DRAG,
+    MENU_DUPLICATE,
+    MENU_DELETE,
+    MENU_MORE,
+  ];
+
+  buttonIcons.forEach((iconPath, index) => {
     const buttonDiv = document.createElement("div");
     buttonDiv.style.display = "flex";
-    buttonDiv.style.gap = "3px";
-
-    const button = document.createElement("button");
+    const button = document.createElement("div");
+    button.id = buttonId[index];
     button.style.padding = "3px";
     button.style.display = "flex";
     button.style.justifyContent = "center";
@@ -49,8 +65,6 @@ function createMenuElement() {
     button.style.backgroundColor = "#fff";
     button.style.border = "none";
 
-    button.style.width = "fit-content";
-    button.style.height = "fit-content";
     button.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
     button.style.cursor = "pointer";
     button.style.color = "#fff";
@@ -59,6 +73,9 @@ function createMenuElement() {
     const svgDiv = document.createElement("div");
     svgDiv.style.width = "12px";
     svgDiv.style.height = "12px";
+    svgDiv.style.display = "flex";
+    svgDiv.style.justifyContent = "center";
+    svgDiv.style.alignItems = "center";
 
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
@@ -82,9 +99,6 @@ function createMenuElement() {
 
   return menuDiv as HTMLElement;
 }
-
-// Call the function to create and append the element to the DOM
-createMenuElement();
 
 export class SelectElementUtils {
   appContext: AppContext;

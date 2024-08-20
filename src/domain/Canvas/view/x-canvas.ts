@@ -2,9 +2,11 @@ import {
   isElementParentIsMenu,
   isElementMenu,
   isElementMenuContainer,
+  isElementParentIsMenuGrabButton,
+  isElementMenuGrabButton,
 } from "../../../utils/canvas";
 import { CANVAS_ELEMENT } from "../../../utils/consts";
-import { getElementInfo } from "../../../utils/global";
+import { getElementInfo, isHTMLElement } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
 import { MoveUpSelectedElementUtils } from "../context/moveElement";
@@ -62,6 +64,9 @@ export class CanvasComponent extends HTMLElement {
     const target = event.target as HTMLElement;
     this.locateClosestElementUtils.clearScrollTimer();
 
+    if (!isHTMLElement(target)) {
+      return;
+    }
     const info = getElementInfo(target);
     this.appContext.latestInfo = info;
     if (
@@ -82,7 +87,10 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    if (this.appContext.selectedElement === event.target) {
+    if (
+      isElementParentIsMenuGrabButton(event.target as HTMLElement) ||
+      isElementMenuGrabButton(event.target as HTMLElement)
+    ) {
       this.appContext.isDragging = true;
       // Disable text and image dragging
       event.preventDefault();

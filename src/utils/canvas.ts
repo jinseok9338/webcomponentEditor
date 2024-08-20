@@ -1,4 +1,4 @@
-import { MENU, MENU_CONTAINER } from "./consts";
+import { MENU, MENU_CONTAINER, MENU_DRAG } from "./consts";
 
 export const convertToFramesAndComponents = (html: string) => {
   const parsedHtml = html.trim();
@@ -201,4 +201,38 @@ export const isElementMenu = (element: HTMLElement) => {
 
 export const isElementMenuContainer = (element: HTMLElement) => {
   return element.id === MENU_CONTAINER;
+};
+
+export const isElementParentMenuContainer = (element: HTMLElement): boolean => {
+  const parent = element.parentElement;
+  if (parent) {
+    if (parent.id === MENU_CONTAINER) {
+      return true;
+    }
+    return isElementParentMenuContainer(parent);
+  }
+  return false;
+};
+
+export const isElementMenuGrabButton = (element: HTMLElement) => {
+  return element.id === MENU_DRAG;
+};
+
+export const isElementParentIsMenuGrabButton = (
+  element: HTMLElement
+): boolean => {
+  const parent = element.parentElement;
+  if (parent) {
+    if (parent.id === MENU_DRAG) {
+      return true;
+    }
+    return isElementParentIsMenuGrabButton(parent);
+  }
+  return false;
+};
+
+export const removeElement = (element: HTMLElement) => {
+  if (element.parentNode) {
+    element.parentNode.removeChild(element);
+  }
 };

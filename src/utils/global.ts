@@ -1,24 +1,3 @@
-export function addEvent(obj: any, type: string, fn: any) {
-  if (obj.attachEvent) {
-    obj["e" + type + fn] = fn;
-    obj[type + fn] = function () {
-      obj["e" + type + fn](window.event);
-    };
-    obj.attachEvent("on" + type, obj[type + fn]);
-  } else {
-    obj.addEventListener(type, fn, false);
-  }
-}
-
-export function removeEvent(obj: any, type: string, fn: any) {
-  if (obj.detachEvent) {
-    obj.detachEvent("on" + type, obj[type + fn]);
-    obj[type + fn] = null;
-  } else {
-    obj.removeEventListener(type, fn, false);
-  }
-}
-
 export function addStyleElement(css: string) {
   const style = document.createElement("style");
   style.textContent = css;
@@ -62,3 +41,7 @@ export function getElementInfo(element: HTMLElement) {
     },
   };
 }
+
+export const isHTMLElement = (element: any): element is HTMLElement => {
+  return element instanceof HTMLElement;
+};
