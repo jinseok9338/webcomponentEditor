@@ -10,10 +10,13 @@ export const convertToFramesAndComponents = (html: string) => {
   // Function to create a Component instance from an HTML element
   const createComponent = (element: HTMLElement) => {
     const tag = element.tagName.toLowerCase();
-    const attrs = Array.from(element.attributes).reduce((acc: { [key: string]: string }, attr) => {
-      acc[attr.name] = attr.value;
-      return acc;
-    }, {});
+    const attrs = Array.from(element.attributes).reduce(
+      (acc: { [key: string]: string }, attr) => {
+        acc[attr.name] = attr.value;
+        return acc;
+      },
+      {}
+    );
     // if the element has no children, and has text, then it is a text component
     const text =
       element.childNodes.length === 1 &&
@@ -30,7 +33,11 @@ export const convertToFramesAndComponents = (html: string) => {
   };
 
   // Recursive function to traverse the DOM and generate Frames and Components
-  const traverseNode = (node: HTMLElement, parentId: number | null, position: number) => {
+  const traverseNode = (
+    node: HTMLElement,
+    parentId: number | null,
+    position: number
+  ) => {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node;
       const currentId = idCounter++;
@@ -64,7 +71,12 @@ export class Frame {
   content_id: number;
   position: number;
   parentId: number | null;
-  constructor(id: number, content_id: number, position: number, parentId: number| null) {
+  constructor(
+    id: number,
+    content_id: number,
+    position: number,
+    parentId: number | null
+  ) {
     // this is id of the frame in that is unique
     this.id = id;
     // this is used to map to the content of the frame
@@ -84,11 +96,14 @@ export class Component {
     text: string | null;
   };
 
-  constructor(id: number, content: {
-    tag: string;
-    attrs: Record<string, string>;
-    text: string | null;
-  }) {
+  constructor(
+    id: number,
+    content: {
+      tag: string;
+      attrs: Record<string, string>;
+      text: string | null;
+    }
+  ) {
     this.id = id;
     this.content = content;
   }
@@ -161,32 +176,23 @@ export function renderHtml(frames: Frame[], components: Component[]) {
   return rootNodes.map(generateHtml).join("");
 }
 
-/*
- * Method to generate new HTML from the selected element and the target element
-selectedElement : Element
-targetElement : Element
- */
-export const moveUpSelectedElementInfrontOfTargetElement = (
-  selectedElement: HTMLElement,
-  targetElement: HTMLElement
-) => {
-  if(targetElement.parentNode === null) return;
-  targetElement.parentNode.insertBefore(selectedElement, targetElement);
-  if (selectedElement !== targetElement) {
-    targetElement.parentNode.removeChild(targetElement);
-  }
-
-};
-
-/**
- * Calculate the distance from a point to a rectangle.
- * @param {number} x - The x-coordinate of the point.
- * @param {number} y - The y-coordinate of the point.
- * @param {DOMRect} rect - The bounding rectangle of the element.
- * @returns {number} The distance to the closest edge of the rectangle.
- */
 export function calculateDistance(x: number, y: number, rect: DOMRect) {
   const dx = Math.max(rect.left - x, 0, x - rect.right);
   const dy = Math.max(rect.top - y, 0, y - rect.bottom);
   return Math.sqrt(dx * dx + dy * dy);
 }
+
+export const isElementParentIsMenu = (element: HTMLElement): boolean => {
+  const parent = element.parentElement;
+  if (parent) {
+    if (parent.id === "menu") {
+      return true;
+    }
+    return isElementParentIsMenu(parent);
+  }
+  return false;
+};
+
+export const isElementMenu = (element: HTMLElement) => {
+  return element.id === "menu";
+};

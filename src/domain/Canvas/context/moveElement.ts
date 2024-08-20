@@ -1,8 +1,6 @@
 import { calculateDistance } from "../../../utils/canvas";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
-// This class contains methods to find the closest border to which the selected element should move
-// and contains methods to move the selected element
 export class MoveUpSelectedElementUtils {
   appContext: AppContext;
   constructor() {
@@ -11,6 +9,7 @@ export class MoveUpSelectedElementUtils {
 
   moveElement() {
     // canvas 는 이동할 수 없다.
+    // 옮기려는 타깃 엘리먼트가 canvas 밖에 있는경우 이동하지 않는다.
     if (
       this.appContext.selectedElement &&
       this.isElementCanvas(this.appContext.selectedElement) &&
@@ -119,7 +118,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderLeft =
-          "5px solid #7FFFD4";
+          "3px solid #7FFFD4";
         this.appContext.closestBorder = "left";
         break;
       case "right":
@@ -127,7 +126,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderRight =
-          "5px solid #7FFFD4";
+          "3px solid #7FFFD4";
 
         this.appContext.closestBorder = "right";
         break;
@@ -136,7 +135,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderTop =
-          "5px solid #7FFFD4";
+          "3px solid #7FFFD4";
         this.appContext.closestBorder = "top";
         break;
       case "bottom":
@@ -144,7 +143,7 @@ export class MoveUpSelectedElementUtils {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderBottom =
-          "5px solid #7FFFD4";
+          "3px solid #7FFFD4";
         this.appContext.closestBorder = "bottom";
     }
   }

@@ -1,3 +1,4 @@
+import { isElementParentIsMenu, isElementMenu } from "../../../utils/canvas";
 import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
@@ -53,15 +54,17 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    if (this.appContext.selectedElement) {
-      return;
-    }
-
     const target = event.target as HTMLElement;
     this.locateClosestElementUtils.clearScrollTimer();
 
     const info = getElementInfo(target);
     this.appContext.latestInfo = info;
+    if (
+      isElementParentIsMenu(this.appContext.latestInfo.element) ||
+      isElementMenu(this.appContext.latestInfo.element)
+    ) {
+      return;
+    }
     this.locateClosestElementUtils.showInfo(info);
   }
 
