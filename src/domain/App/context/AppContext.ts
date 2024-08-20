@@ -18,7 +18,8 @@ export class AppContext extends HTMLElement {
     nobg: false,
   };
   canvasHtml: string = `
-<div id="canvas" style="padding: 20px 10px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
+<div id="canvas">
+<div id="body" style="padding: 20px 10px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
 <div style="display: flex; gap: 10px;">
    <p>A basic avatar component in two sizes:</p>
 
@@ -46,6 +47,7 @@ export class AppContext extends HTMLElement {
       src="https://i.pravatar.cc/150?u=a04258114e29026302d"
       style="width: 150px; "
       />
+</div>
 </div>
 </div>`;
 

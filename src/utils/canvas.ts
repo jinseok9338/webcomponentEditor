@@ -1,3 +1,5 @@
+import { MENU, MENU_CONTAINER } from "./consts";
+
 export const convertToFramesAndComponents = (html: string) => {
   const parsedHtml = html.trim();
   const parser = new DOMParser();
@@ -185,7 +187,7 @@ export function calculateDistance(x: number, y: number, rect: DOMRect) {
 export const isElementParentIsMenu = (element: HTMLElement): boolean => {
   const parent = element.parentElement;
   if (parent) {
-    if (parent.id === "menu") {
+    if (parent.id === MENU) {
       return true;
     }
     return isElementParentIsMenu(parent);
@@ -194,5 +196,9 @@ export const isElementParentIsMenu = (element: HTMLElement): boolean => {
 };
 
 export const isElementMenu = (element: HTMLElement) => {
-  return element.id === "menu";
+  return element.id === MENU;
+};
+
+export const isElementMenuContainer = (element: HTMLElement) => {
+  return element.id === MENU_CONTAINER;
 };

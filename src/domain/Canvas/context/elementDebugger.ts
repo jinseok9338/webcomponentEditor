@@ -1,10 +1,6 @@
 import { addStyleElement, getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
-/**
- * This class contains methods to locate the closest element while the cursor is not dragging.
- * which means the methods are not used when the cursor is in dragging mode.
- */
 export class LocateClosestElementUtils {
   appContext: AppContext;
 
@@ -220,8 +216,8 @@ export class LocateClosestElementUtils {
     let outlinerContainer = document.createElement("div");
     outlinerContainer.className =
       "boxvis" +
-      (this.appContext.query?.noln ? " noln" : "") +
-      (this.appContext.query?.nobg ? " nobg" : "");
+      (this.appContext.query.noln ? " noln" : "") +
+      (this.appContext.query.nobg ? " nobg" : "");
     document.body.appendChild(outlinerContainer);
 
     outlinerContainer.innerHTML = html;

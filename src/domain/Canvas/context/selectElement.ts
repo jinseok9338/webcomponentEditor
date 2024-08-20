@@ -1,9 +1,10 @@
+import { CANVAS, MENU, MENU_CONTAINER } from "../../../utils/consts";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
 function createMenuElement() {
   // Create the outermost div
   const menuDiv = document.createElement("div");
-  menuDiv.id = "menu";
+  menuDiv.id = MENU;
   menuDiv.style.position = "absolute";
   menuDiv.style.top = "0";
   menuDiv.style.right = "0";
@@ -110,7 +111,7 @@ export class SelectElementUtils {
 
     this.appContext.selectedElement = clickedElement;
     const menuWrapper = document.createElement("div");
-    menuWrapper.id = "menu_container";
+    menuWrapper.id = MENU_CONTAINER;
     menuWrapper.style.position = "relative";
     const originalElementComputedStyle = getComputedStyle(clickedElement);
     menuWrapper.style.width = originalElementComputedStyle.width;
@@ -122,11 +123,11 @@ export class SelectElementUtils {
   }
 
   isTheElementCanvas(element: HTMLElement) {
-    return element.id === "canvas";
+    return element.id === CANVAS;
   }
 
   removeMenuContainer() {
-    const menuContainer = document.getElementById("menu_container");
+    const menuContainer = document.getElementById(MENU_CONTAINER);
     const menus = menuContainer?.firstChild;
     menuContainer?.removeChild(menus as HTMLElement);
     const originalElement = menuContainer?.firstChild;

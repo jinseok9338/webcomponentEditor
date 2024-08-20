@@ -1,4 +1,9 @@
-import { isElementParentIsMenu, isElementMenu } from "../../../utils/canvas";
+import {
+  isElementParentIsMenu,
+  isElementMenu,
+  isElementMenuContainer,
+} from "../../../utils/canvas";
+import { CANVAS_ELEMENT } from "../../../utils/consts";
 import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
@@ -60,8 +65,10 @@ export class CanvasComponent extends HTMLElement {
     const info = getElementInfo(target);
     this.appContext.latestInfo = info;
     if (
+      target === this.appContext.selectedElement ||
       isElementParentIsMenu(this.appContext.latestInfo.element) ||
-      isElementMenu(this.appContext.latestInfo.element)
+      isElementMenu(this.appContext.latestInfo.element) ||
+      isElementMenuContainer(this.appContext.latestInfo.element)
     ) {
       return;
     }
@@ -105,5 +112,5 @@ export class CanvasComponent extends HTMLElement {
 }
 
 export const registerCanvasComponent = () => {
-  customElements.define("x-canvas", CanvasComponent);
+  customElements.define(CANVAS_ELEMENT, CanvasComponent);
 };

@@ -1,4 +1,9 @@
 import { calculateDistance } from "../../../utils/canvas";
+import {
+  CANVAS,
+  Direction,
+  minimalDistanceToshow,
+} from "../../../utils/consts";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
 export class MoveUpSelectedElementUtils {
@@ -20,25 +25,25 @@ export class MoveUpSelectedElementUtils {
       return;
     }
     if (
-      this.appContext.closestBorder === "top" ||
-      this.appContext.closestBorder === "left"
+      this.appContext.closestBorder === Direction.TOP ||
+      this.appContext.closestBorder === Direction.LEFT
     ) {
       this.moveToTheFront();
     }
     if (
-      this.appContext.closestBorder === "right" ||
-      this.appContext.closestBorder === "bottom"
+      this.appContext.closestBorder === Direction.RIGHT ||
+      this.appContext.closestBorder === Direction.BOTTOM
     ) {
       this.moveToTheBack();
     }
   }
 
   isElementCanvas(element: HTMLElement) {
-    return element.id === "canvas";
+    return element.id === CANVAS;
   }
 
   isOutsideTheCanvas(element: HTMLElement): boolean {
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById(CANVAS);
     if (!canvas) {
       console.warn("Canvas element not found");
       return false;
@@ -92,12 +97,11 @@ export class MoveUpSelectedElementUtils {
       this.appContext.closestElementWhileDragging &&
       this.appContext.closestElementWhileDragging !==
         this.appContext.selectedElement &&
-      minDistance <= 30
+      minDistance <= minimalDistanceToshow
     ) {
-      // now find the closest border of the selected element to the cursor
       const rect =
         this.appContext.closestElementWhileDragging.getBoundingClientRect();
-      const distances = {
+      const distances: Record<Direction, number> = {
         left: Math.abs(rect.left - clientX),
         right: Math.abs(rect.right - clientX),
         top: Math.abs(rect.top - clientY),
@@ -105,46 +109,46 @@ export class MoveUpSelectedElementUtils {
       } as const;
       const closestBorder = (
         Object.keys(distances) as Array<keyof typeof distances>
-      ).reduce((a, b) => (distances[a] < distances[b] ? a : b), "left");
+      ).reduce((a, b) => (distances[a] < distances[b] ? a : b), Direction.LEFT);
 
       this.markTheClosestBorder(closestBorder);
     }
   }
 
-  markTheClosestBorder(closestBorder: "left" | "right" | "top" | "bottom") {
+  markTheClosestBorder(closestBorder: Direction) {
     switch (closestBorder) {
-      case "left":
+      case Direction.LEFT:
         if (!this.appContext.closestElementWhileDragging) {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderLeft =
           "3px solid #7FFFD4";
-        this.appContext.closestBorder = "left";
+        this.appContext.closestBorder = Direction.LEFT;
         break;
-      case "right":
+      case Direction.RIGHT:
         if (!this.appContext.closestElementWhileDragging) {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderRight =
           "3px solid #7FFFD4";
 
-        this.appContext.closestBorder = "right";
+        this.appContext.closestBorder = Direction.RIGHT;
         break;
-      case "top":
+      case Direction.TOP:
         if (!this.appContext.closestElementWhileDragging) {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderTop =
           "3px solid #7FFFD4";
-        this.appContext.closestBorder = "top";
+        this.appContext.closestBorder = Direction.TOP;
         break;
-      case "bottom":
+      case Direction.BOTTOM:
         if (!this.appContext.closestElementWhileDragging) {
           return;
         }
         this.appContext.closestElementWhileDragging.style.borderBottom =
           "3px solid #7FFFD4";
-        this.appContext.closestBorder = "bottom";
+        this.appContext.closestBorder = Direction.BOTTOM;
     }
   }
 
