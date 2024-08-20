@@ -6,7 +6,6 @@ export class LocateClosestElementUtils {
 
   constructor() {
     this.appContext = getAppContext();
-    this.AddOutliners();
   }
 
   public clearScrollTimer() {

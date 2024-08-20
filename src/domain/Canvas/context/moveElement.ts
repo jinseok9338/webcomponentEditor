@@ -1,6 +1,5 @@
 import {
   calculateDistance,
-  isElementMenu,
   isElementMenuContainer,
   isElementParentMenuContainer,
   removeElement,
