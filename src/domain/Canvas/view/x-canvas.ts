@@ -134,6 +134,7 @@ export class CanvasComponent extends HTMLElement {
 
     if (this.appContext.closestBorder) {
       this.moveUpSelectedElementUtils.moveElement();
+      this.appContext.storage.updateItem(this.innerHTML);
       this.selectElementUtils.clearSelectedElement();
     }
 

@@ -1,5 +1,8 @@
-import { APP_CONTEXT } from "../../../utils/consts";
+import { APP_CONTEXT, testHTML } from "../../../utils/consts";
 import { getElement, getElementInfo } from "../../../utils/global";
+import { UndoManager } from "../../Canvas/context/undoManager";
+import { LocalStorage } from "../../Storage/LocalStorage";
+import { HTMLStorage } from "../../Storage/storage";
 import { Boxvis } from "./type";
 
 export class AppContext extends HTMLElement {
@@ -14,44 +17,17 @@ export class AppContext extends HTMLElement {
   latestInfo: ReturnType<typeof getElementInfo> | null = null;
   scrollTimeout: any = null;
   scrollendDelay = 250;
+  storage: HTMLStorage = new HTMLStorage(
+    new LocalStorage("canvas-html"),
+    testHTML
+  );
   isTextAndImageNotSelectable = true;
   query = {
     noln: false,
     nobg: false,
   };
-  canvasHtml: string = `
-<div id="canvas">
-<div id="body" style="padding: 20px 10px 20px 10px; display: flex; flex-direction: column; gap: 10px;">
-<div style="display: flex; gap: 10px;">
-   <p>A basic avatar component in two sizes:</p>
-
-   <img
-     style="width: 150px;"
-      src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-      />
-
-   <img
-      src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-      style="width: 150px;"
-      />
-
-</div>
-<div style="display: flex; gap: 10px;">
-   <p>A basic avatar component in two sizes:</p>
-
-   <img
-      src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
-      style="width: 150px; "
-      />
-
-
-   <img
-      src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-      style="width: 150px; "
-      />
-</div>
-</div>
-</div>`;
+  canvasHtml: string = this.storage.getItem() ?? "";
+  undoManager: UndoManager = new UndoManager();
 
   constructor() {
     super();

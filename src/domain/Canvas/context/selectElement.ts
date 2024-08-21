@@ -1,5 +1,6 @@
 import {
   CANVAS,
+  CANVAS_ELEMENT,
   MENU_ELEMENT,
   MENU_WRAPPER_ELEMENT,
 } from "../../../utils/consts";
@@ -72,6 +73,11 @@ export class SelectElementUtils {
     const parentElement = element.parentElement?.parentElement;
     const duplicatedElement = element.cloneNode(true) as HTMLElement;
     parentElement?.appendChild(duplicatedElement);
+    this.clearSelectedElement();
+    const CanvasElement = getElement(CANVAS_ELEMENT);
+    if (!CanvasElement) return;
+    this.appContext.storage.updateItem(CanvasElement.innerHTML);
+    this.selectElement(element);
   }
 
   removeElement() {
@@ -82,6 +88,9 @@ export class SelectElementUtils {
     const realElement = element.parentElement;
     if (!parentElement || !realElement) return;
     parentElement?.removeChild(realElement);
+    const CanvasElement = getElement(CANVAS_ELEMENT);
+    if (!CanvasElement) return;
+    this.appContext.storage.updateItem(CanvasElement.innerHTML);
   }
 
   clearSelectedElement() {
