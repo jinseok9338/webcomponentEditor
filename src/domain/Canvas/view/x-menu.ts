@@ -122,10 +122,18 @@ export class MenuComponent extends HTMLElement {
   }
 
   duplicateTheElement() {
+    const currentState = this.appContext.storage.getItem();
+    if (currentState) {
+      this.appContext.undoManager.addAction(currentState);
+    }
     this.selectElementUtils.duplicateElement();
   }
 
   removeTheElement() {
+    const currentState = this.appContext.storage.getItem();
+    if (currentState) {
+      this.appContext.undoManager.addAction(currentState);
+    }
     this.selectElementUtils.removeElement();
   }
 

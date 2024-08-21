@@ -50,6 +50,10 @@ export class MoveUpSelectedElementUtils {
       if (menuContainer) {
         menuContainer.remove();
       }
+      const currentState = this.appContext.storage.getItem();
+      if (currentState) {
+        this.appContext.undoManager.addAction(currentState);
+      }
       this.moveToTheBack();
     }
   }

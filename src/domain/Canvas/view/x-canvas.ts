@@ -39,6 +39,23 @@ export class CanvasComponent extends HTMLElement {
     window.addEventListener("scroll", this.scrollHandler.bind(this));
     this.addEventListener("mouseout", this.mouseOutHandler.bind(this));
     this.addEventListener("mousemove", this.mouseHandler.bind(this));
+    window.addEventListener("keydown", this.onKeyDown.bind(this));
+  }
+
+  private onKeyDown(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === "z") {
+      event.preventDefault(); // Prevent the default browser undo behavior
+      this.undo();
+      this.locateClosestElementUtils.hideBoxVis();
+    }
+  }
+
+  undo() {
+    const html = this.appContext.undoManager.undo();
+
+    if (html !== undefined) {
+      this.innerHTML = html;
+    }
   }
 
   connectedCallback() {
@@ -137,9 +154,7 @@ export class CanvasComponent extends HTMLElement {
       this.appContext.storage.updateItem(this.innerHTML);
       this.selectElementUtils.clearSelectedElement();
     }
-
     this.appContext.closestBorder = null;
-
     event.preventDefault();
   }
 }
