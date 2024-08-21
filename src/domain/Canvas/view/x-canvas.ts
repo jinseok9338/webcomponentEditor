@@ -52,9 +52,9 @@ export class CanvasComponent extends HTMLElement {
 
   undo() {
     const html = this.appContext.undoManager.undo();
-
     if (html !== undefined) {
       this.innerHTML = html;
+      this.appContext.storage.updateItem(this.innerHTML);
     }
   }
 
