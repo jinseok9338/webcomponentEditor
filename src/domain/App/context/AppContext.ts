@@ -1,8 +1,8 @@
 import { APP_CONTEXT, testHTML } from "../../../utils/consts";
 import { getElement, getElementInfo } from "../../../utils/global";
-import { UndoManager } from "../../Canvas/context/undoManager";
 import { LocalStorage } from "../../Storage/LocalStorage";
 import { HTMLStorage } from "../../Storage/storage";
+import { UndoManager } from "../../UndoManager/undoManager";
 import { Boxvis } from "./type";
 
 export class AppContext extends HTMLElement {

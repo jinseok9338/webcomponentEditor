@@ -17,7 +17,6 @@ import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
 import { MoveUpSelectedElementUtils } from "../context/moveElement";
-
 import { SelectElementUtils } from "../context/selectElement";
 
 export class CanvasComponent extends HTMLElement {

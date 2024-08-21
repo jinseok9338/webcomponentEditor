@@ -7,7 +7,6 @@ export class UndoManager<T = any> {
     this.redoStack = [];
   }
 
-  // Undo the last action
   undo(): T | undefined {
     if (this.undoStack.length === 0) {
       return undefined;
@@ -19,7 +18,6 @@ export class UndoManager<T = any> {
     return action;
   }
 
-  // Redo the last undone action
   redo(): T | undefined {
     if (this.redoStack.length === 0) {
       return undefined;
