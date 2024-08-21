@@ -9,7 +9,7 @@ export function getStyleValue(style: CSSStyleDeclaration, value: string) {
 }
 
 export function getElementInfo(element: HTMLElement) {
-  var styles = window.getComputedStyle(element);
+  let styles = window.getComputedStyle(element);
 
   return {
     element: element,
@@ -42,6 +42,10 @@ export function getElementInfo(element: HTMLElement) {
   };
 }
 
-export const isHTMLElement = (element: any): element is HTMLElement => {
-  return element instanceof HTMLElement;
-};
+/*
+ * explictly use this function to grab the element
+ * because I don't want to grab element by id or class name
+ */
+export function getElement(webComponentTag: string) {
+  return document.querySelector(webComponentTag);
+}

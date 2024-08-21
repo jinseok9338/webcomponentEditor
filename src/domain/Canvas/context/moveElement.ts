@@ -2,15 +2,17 @@ import {
   calculateDistance,
   isElementMenuContainer,
   isElementParentMenuContainer,
-  removeElement,
 } from "../../../utils/canvas";
 import {
   CANVAS,
+  CANVAS_ELEMENT,
   Direction,
-  MENU_CONTAINER,
+  MENU_WRAPPER_ELEMENT,
   minimalDistanceToshow,
   targetBorderStyle,
 } from "../../../utils/consts";
+import { convertNodeToHTMLElement, isHTMLElement } from "../../../utils/dom";
+import { getElement } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
 export class MoveUpSelectedElementUtils {
@@ -23,11 +25,10 @@ export class MoveUpSelectedElementUtils {
     // canvas 는 이동할 수 없다.
     // 옮기려는 타깃 엘리먼트가 canvas 밖에 있는경우 이동하지 않는다.
     if (
-      this.appContext.selectedElement &&
-      this.isElementCanvas(this.appContext.selectedElement) &&
-      this.isOutsideTheCanvas(
-        this.appContext.closestElementWhileDragging as HTMLElement
-      )
+      !this.appContext.closestElementWhileDragging ||
+      !this.appContext.selectedElement ||
+      this.isElementCanvas(this.appContext.selectedElement) ||
+      this.isOutsideTheCanvas(this.appContext.closestElementWhileDragging)
     ) {
       return;
     }
@@ -35,9 +36,9 @@ export class MoveUpSelectedElementUtils {
       this.appContext.closestBorder === Direction.TOP ||
       this.appContext.closestBorder === Direction.LEFT
     ) {
-      const menuContainer = document.getElementById(MENU_CONTAINER);
+      const menuContainer = getElement(MENU_WRAPPER_ELEMENT);
       if (menuContainer) {
-        removeElement(menuContainer);
+        menuContainer.remove();
       }
       this.moveToTheFront();
     }
@@ -45,9 +46,9 @@ export class MoveUpSelectedElementUtils {
       this.appContext.closestBorder === Direction.RIGHT ||
       this.appContext.closestBorder === Direction.BOTTOM
     ) {
-      const menuContainer = document.getElementById(MENU_CONTAINER);
+      const menuContainer = getElement(MENU_WRAPPER_ELEMENT);
       if (menuContainer) {
-        removeElement(menuContainer);
+        menuContainer.remove();
       }
       this.moveToTheBack();
     }
@@ -57,8 +58,8 @@ export class MoveUpSelectedElementUtils {
     return element.id === CANVAS;
   }
 
-  isOutsideTheCanvas(element: HTMLElement): boolean {
-    const canvas = document.getElementById(CANVAS);
+  isOutsideTheCanvas(element: Element): boolean {
+    const canvas = getElement(CANVAS_ELEMENT);
     if (!canvas) {
       console.warn("Canvas element not found");
       return false;
@@ -85,15 +86,14 @@ export class MoveUpSelectedElementUtils {
         clientX <= rect.right &&
         clientY >= rect.top &&
         clientY <= rect.bottom &&
-        !this.isTheElemnetTheChildOfTheSelectedElement(
-          element as HTMLElement
-        ) &&
-        !this.isOutsideTheCanvas(element as HTMLElement) &&
+        !this.isTheElemnetTheChildOfTheSelectedElement(element) &&
+        !this.isOutsideTheCanvas(element) &&
         // element should not be the menu
-        !isElementMenuContainer(element as HTMLElement) &&
-        !isElementParentMenuContainer(element as HTMLElement)
+        !isElementMenuContainer(element) &&
+        !isElementParentMenuContainer(element)
       ) {
-        this.appContext.closestElementWhileDragging = element as HTMLElement;
+        this.appContext.closestElementWhileDragging =
+          convertNodeToHTMLElement(element);
         minDistance = 0;
         return;
       }
@@ -101,14 +101,15 @@ export class MoveUpSelectedElementUtils {
       const distance = calculateDistance(clientX, clientY, rect);
       if (distance < minDistance) {
         minDistance = distance;
-        this.appContext.closestElementWhileDragging = element as HTMLElement;
+        this.appContext.closestElementWhileDragging =
+          convertNodeToHTMLElement(element);
       }
     });
 
     // Reset all borders for elements except the selected one
     elements.forEach((el) => {
-      if (el !== this.appContext.selectedElement) {
-        (el as HTMLElement).style.border = "";
+      if (el !== this.appContext.selectedElement && isHTMLElement(el)) {
+        el.style.border = "";
       }
     });
     if (
@@ -178,13 +179,15 @@ export class MoveUpSelectedElementUtils {
       return;
     }
     // 클론 한 엘리먼트의 boxShadow 제거
-    const clonedSelectedElement = this.appContext.selectedElement.cloneNode(
-      true
-    ) as HTMLElement;
+    const clonedSelectedElement =
+      this.appContext.selectedElement.cloneNode(true);
+    const clonedSelectedElementAsHTMLElement = convertNodeToHTMLElement(
+      clonedSelectedElement
+    );
 
     if (this.appContext.closestElementWhileDragging.parentNode) {
       this.appContext.closestElementWhileDragging.parentNode.insertBefore(
-        clonedSelectedElement,
+        clonedSelectedElementAsHTMLElement,
         this.appContext.closestElementWhileDragging
       );
     }
@@ -207,13 +210,15 @@ export class MoveUpSelectedElementUtils {
       return;
     }
 
-    const clonedSelectedElement = this.appContext.selectedElement.cloneNode(
-      true
-    ) as HTMLElement;
-    clonedSelectedElement.style.boxShadow = "";
+    const clonedSelectedElement =
+      this.appContext.selectedElement.cloneNode(true);
+    const clonedSelectedElementAsHTMLElement = convertNodeToHTMLElement(
+      clonedSelectedElement
+    );
+    clonedSelectedElementAsHTMLElement.style.boxShadow = "";
     if (this.appContext.closestElementWhileDragging.parentNode) {
       this.appContext.closestElementWhileDragging.parentNode.insertBefore(
-        clonedSelectedElement,
+        clonedSelectedElementAsHTMLElement,
         this.appContext.closestElementWhileDragging.nextSibling
       );
     }
@@ -227,11 +232,13 @@ export class MoveUpSelectedElementUtils {
     this.appContext.closestElementWhileDragging = null;
   }
 
-  isTheElemnetTheChildOfTheSelectedElement(element: HTMLElement): boolean {
+  isTheElemnetTheChildOfTheSelectedElement(
+    element: Element | ParentNode
+  ): boolean {
     if (this.appContext.selectedElement === element) {
       return true;
     }
-    const parentNode = element.parentNode as HTMLElement;
+    const parentNode = element.parentNode;
     if (parentNode) {
       return this.isTheElemnetTheChildOfTheSelectedElement(parentNode);
     }

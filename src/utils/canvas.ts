@@ -1,4 +1,5 @@
 import { MENU, MENU_CONTAINER, MENU_DRAG } from "./consts";
+import { isElement, isHTMLElement } from "./dom";
 
 export const convertToFramesAndComponents = (html: string) => {
   const parsedHtml = html.trim();
@@ -10,7 +11,7 @@ export const convertToFramesAndComponents = (html: string) => {
   const components: Component[] = []; // To store the Component instances
 
   // Function to create a Component instance from an HTML element
-  const createComponent = (element: HTMLElement) => {
+  const createComponent = (element: Element) => {
     const tag = element.tagName.toLowerCase();
     const attrs = Array.from(element.attributes).reduce(
       (acc: { [key: string]: string }, attr) => {
@@ -36,7 +37,7 @@ export const convertToFramesAndComponents = (html: string) => {
 
   // Recursive function to traverse the DOM and generate Frames and Components
   const traverseNode = (
-    node: HTMLElement,
+    node: Element,
     parentId: number | null,
     position: number
   ) => {
@@ -54,7 +55,8 @@ export const convertToFramesAndComponents = (html: string) => {
 
       // Process child nodes
       Array.from(element.childNodes).forEach((child, index) => {
-        const childElement = child as HTMLElement;
+        const childElement = child;
+        if (!isElement(childElement)) return;
         traverseNode(childElement, currentId, index);
       });
     }
@@ -79,11 +81,8 @@ export class Frame {
     position: number,
     parentId: number | null
   ) {
-    // this is id of the frame in that is unique
     this.id = id;
-    // this is used to map to the content of the frame
     this.content_id = content_id;
-    // this is the position
     this.position = position;
     this.parentId = parentId;
   }
@@ -195,15 +194,18 @@ export const isElementParentIsMenu = (element: HTMLElement): boolean => {
   return false;
 };
 
-export const isElementMenu = (element: HTMLElement) => {
+export const isElementMenu = (element: Element) => {
   return element.id === MENU;
 };
 
-export const isElementMenuContainer = (element: HTMLElement) => {
+export const isElementMenuContainer = (element: Element) => {
+  if (!isHTMLElement(element)) {
+    return false;
+  }
   return element.id === MENU_CONTAINER;
 };
 
-export const isElementParentMenuContainer = (element: HTMLElement): boolean => {
+export const isElementParentMenuContainer = (element: Element): boolean => {
   const parent = element.parentElement;
   if (parent) {
     if (parent.id === MENU_CONTAINER) {
@@ -214,13 +216,11 @@ export const isElementParentMenuContainer = (element: HTMLElement): boolean => {
   return false;
 };
 
-export const isElementMenuGrabButton = (element: HTMLElement) => {
+export const isElementMenuGrabButton = (element: Element) => {
   return element.id === MENU_DRAG;
 };
 
-export const isElementParentIsMenuGrabButton = (
-  element: HTMLElement
-): boolean => {
+export const isElementParentIsMenuGrabButton = (element: Element): boolean => {
   const parent = element.parentElement;
   if (parent) {
     if (parent.id === MENU_DRAG) {

@@ -17,4 +17,7 @@ export enum Direction {
 export const minimalDistanceToshow = 30;
 export const targetBorderStyle = "3px solid #7FFFD4";
 
+export const APP_CONTEXT = "x-app-context";
 export const CANVAS_ELEMENT = "x-canvas";
+export const MENU_ELEMENT = "x-menu";
+export const MENU_WRAPPER_ELEMENT = "x-menu-wrapper";

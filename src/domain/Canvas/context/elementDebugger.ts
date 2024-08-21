@@ -1,3 +1,4 @@
+import { convertNodeToHTMLElement } from "../../../utils/dom";
 import { addStyleElement, getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 
@@ -19,7 +20,6 @@ export class LocateClosestElementUtils {
     }
 
     this.appContext.boxvis.tooltip.style.display = "none";
-
     this.appContext.boxvis.margin.horizontal.removeAttribute("style");
     this.appContext.boxvis.margin.vertical.removeAttribute("style");
     this.appContext.boxvis.margin.inner.style.display = "none";
@@ -223,26 +223,26 @@ export class LocateClosestElementUtils {
     let addedElements = outlinerContainer.childNodes;
     this.appContext.boxvis = {
       margin: {
-        horizontal: addedElements[0].childNodes[0] as HTMLElement,
-        vertical: addedElements[0].childNodes[1] as HTMLElement,
-        inner: addedElements[0].childNodes[2] as HTMLElement,
+        horizontal: convertNodeToHTMLElement(addedElements[0].childNodes[0]),
+        vertical: convertNodeToHTMLElement(addedElements[0].childNodes[1]),
+        inner: convertNodeToHTMLElement(addedElements[0].childNodes[2]),
       },
       border: {
-        horizontal: addedElements[1].childNodes[0] as HTMLElement,
-        vertical: addedElements[1].childNodes[1] as HTMLElement,
-        inner: addedElements[1].childNodes[2] as HTMLElement,
+        horizontal: convertNodeToHTMLElement(addedElements[1].childNodes[0]),
+        vertical: convertNodeToHTMLElement(addedElements[1].childNodes[1]),
+        inner: convertNodeToHTMLElement(addedElements[1].childNodes[2]),
       },
       padding: {
-        horizontal: addedElements[2].childNodes[0] as HTMLElement,
-        vertical: addedElements[2].childNodes[1] as HTMLElement,
-        inner: addedElements[2].childNodes[2] as HTMLElement,
+        horizontal: convertNodeToHTMLElement(addedElements[2].childNodes[0]),
+        vertical: convertNodeToHTMLElement(addedElements[2].childNodes[1]),
+        inner: convertNodeToHTMLElement(addedElements[2].childNodes[2]),
       },
       box: {
-        horizontal: addedElements[3].childNodes[0] as HTMLElement,
-        vertical: addedElements[3].childNodes[1] as HTMLElement,
-        inner: addedElements[3].childNodes[2] as HTMLElement,
+        horizontal: convertNodeToHTMLElement(addedElements[3].childNodes[0]),
+        vertical: convertNodeToHTMLElement(addedElements[3].childNodes[1]),
+        inner: convertNodeToHTMLElement(addedElements[3].childNodes[2]),
       },
-      tooltip: addedElements[4] as HTMLElement,
+      tooltip: convertNodeToHTMLElement(addedElements[4]),
     };
   }
 }

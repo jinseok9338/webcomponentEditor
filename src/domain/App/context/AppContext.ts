@@ -1,7 +1,9 @@
-import { getElementInfo } from "../../../utils/global";
+import { APP_CONTEXT } from "../../../utils/consts";
+import { getElement, getElementInfo } from "../../../utils/global";
 import { Boxvis } from "./type";
 
 export class AppContext extends HTMLElement {
+  isContextReady = false;
   selectedElement: HTMLElement | null = null;
   isDragging = false;
   closestElementWhileDragging: HTMLElement | null = null;
@@ -54,16 +56,20 @@ export class AppContext extends HTMLElement {
   constructor() {
     super();
     this.style.display = "contents";
+    this.isContextReady = true;
   }
 }
 
 export const registerAppContext = () =>
-  customElements.define("x-app-context", AppContext);
+  customElements.define(APP_CONTEXT, AppContext);
 
 export const getAppContext = () => {
-  const appContext = document.querySelector("x-app-context");
+  const appContext = getElement(APP_CONTEXT) as AppContext;
   if (!appContext) {
     throw new Error("AppContext not found");
   }
-  return appContext as AppContext;
+  if (!appContext.isContextReady) {
+    throw new Error("AppContext is not ready");
+  }
+  return appContext;
 };

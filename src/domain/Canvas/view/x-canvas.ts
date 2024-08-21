@@ -5,11 +5,19 @@ import {
   isElementParentIsMenuGrabButton,
   isElementMenuGrabButton,
 } from "../../../utils/canvas";
-import { CANVAS_ELEMENT } from "../../../utils/consts";
-import { getElementInfo, isHTMLElement } from "../../../utils/global";
+import {
+  CANVAS_ELEMENT,
+  MENU_DELETE,
+  MENU_DUPLICATE,
+  MENU_GO_UP,
+  MENU_MORE,
+} from "../../../utils/consts";
+import { isElement, isHTMLElement } from "../../../utils/dom";
+import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
 import { MoveUpSelectedElementUtils } from "../context/moveElement";
+
 import { SelectElementUtils } from "../context/selectElement";
 
 export class CanvasComponent extends HTMLElement {
@@ -61,7 +69,7 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    const target = event.target as HTMLElement;
+    const target = event.target;
     this.locateClosestElementUtils.clearScrollTimer();
 
     if (!isHTMLElement(target)) {
@@ -82,14 +90,30 @@ export class CanvasComponent extends HTMLElement {
 
   onMouseDown(event: MouseEvent) {
     if (!this.appContext.selectedElement) {
-      this.selectElementUtils.selectElement(event);
+      this.selectElementUtils.selectElementWithClick(event);
       this.locateClosestElementUtils.hideBoxVis();
       return;
     }
 
+    if (!event.target) {
+      return;
+    }
+
     if (
-      isElementParentIsMenuGrabButton(event.target as HTMLElement) ||
-      isElementMenuGrabButton(event.target as HTMLElement)
+      (event.target as HTMLElement).id === MENU_GO_UP ||
+      (event.target as HTMLElement).id === MENU_DUPLICATE ||
+      (event.target as HTMLElement).id === MENU_DELETE ||
+      (event.target as HTMLElement).id === MENU_MORE
+    ) {
+      return;
+    }
+
+    if (!isElement(event.target)) {
+      return;
+    }
+    if (
+      isElementParentIsMenuGrabButton(event.target) ||
+      isElementMenuGrabButton(event.target)
     ) {
       this.appContext.isDragging = true;
       // Disable text and image dragging
@@ -98,7 +122,7 @@ export class CanvasComponent extends HTMLElement {
     }
     if (this.appContext.selectedElement !== event.target) {
       this.appContext.isDragging = false;
-      this.selectElementUtils.selectElement(event);
+      this.selectElementUtils.selectElementWithClick(event);
     }
   }
 
