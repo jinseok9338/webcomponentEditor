@@ -49,3 +49,8 @@ export const isElementText = (element: Element): element is HTMLElement => {
     element.tagName === "CODE"
   );
 };
+
+// export const validateHTMLtext = (text: string): boolean => {
+//   // if the img tag has margin or padding return false
+//   // if the img tag dosesn't have width or height in the style attribute return false
+// };

@@ -18,3 +18,17 @@ img {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
+div {
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+p {
+  width: fit-content;
+  height: fit-content;
+}
