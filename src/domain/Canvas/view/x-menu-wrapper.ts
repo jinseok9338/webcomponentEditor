@@ -4,7 +4,7 @@ import {
   MENU_WRAPPER_ELEMENT,
 } from "../../../utils/consts";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
-import { ElementTagType } from "../context/type";
+import { ElementTagType, ElementTagTypeArray } from "../context/type";
 
 export class MenuWrapperComponent extends HTMLElement {
   appContext: AppContext;
@@ -47,7 +47,7 @@ export class MenuWrapperComponent extends HTMLElement {
   }
 
   private elementIsTagType(elementType: string): elementType is ElementTagType {
-    if (elementType === "div" || elementType === "img" || elementType === "p") {
+    if (ElementTagTypeArray.includes(elementType as ElementTagType)) {
       return true;
     }
     return false;

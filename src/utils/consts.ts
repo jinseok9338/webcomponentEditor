@@ -54,7 +54,8 @@ export const testHTML = `
       style="width: 150px; height: 150px;"
       />
 </div>
-<div style="display: flex; justify-content: center; align-items: center;">
+<div style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+<span>A basic avatar component in two sizes:</span>
    <img
       src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
       style="width: 150px; height: 150px;"

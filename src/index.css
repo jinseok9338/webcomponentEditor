@@ -27,8 +27,7 @@ div {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-
-p {
+span p {
   width: fit-content;
   height: fit-content;
 }
