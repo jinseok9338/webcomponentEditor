@@ -22,8 +22,30 @@ export class MenuWrapperComponent extends HTMLElement {
     const selectedElement = this.appContext.selectedElement;
     if (!selectedElement) return;
     const originalElementComputedStyle = getComputedStyle(selectedElement);
-    this.style.width = originalElementComputedStyle.width;
-    this.style.height = originalElementComputedStyle.height;
+    const width = parseFloat(
+      originalElementComputedStyle.width.replace("px", "")
+    );
+    const height = parseFloat(
+      originalElementComputedStyle.height.replace("px", "")
+    );
+    const marginLeft = parseFloat(
+      originalElementComputedStyle.marginLeft.replace("px", "")
+    );
+    const marginRight = parseFloat(
+      originalElementComputedStyle.marginRight.replace("px", "")
+    );
+    const marginTop = parseFloat(
+      originalElementComputedStyle.marginTop.replace("px", "")
+    );
+    const marginBottom = parseFloat(
+      originalElementComputedStyle.marginBottom.replace("px", "")
+    );
+
+    this.style.width = width + marginLeft + marginRight + "px";
+    this.style.height = height + marginTop + marginBottom + "px";
+
+    this.style.border = "1px dotted gray";
+    this.style.margin = "-1px";
     this.tagType = this.determineElementType();
 
     if (this.tagType === ElementTagType.IMG) {

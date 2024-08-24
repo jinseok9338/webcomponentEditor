@@ -2,12 +2,12 @@
    inspiration: https://www.digitalocean.com/community/tutorials/css-minimal-css-reset */
 
 :root {
-  box-sizing: border-box;
   line-height: 1.4;
   /* https://kilianvalkhof.com/2022/css-html/your-css-reset-needs-text-size-adjust-probably/ */
   -moz-text-size-adjust: none;
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
+  box-sizing: border-box;
 }
 
 img {
@@ -25,7 +25,9 @@ div {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
-span p {
+
+span,
+p {
   width: fit-content;
   height: fit-content;
 }
