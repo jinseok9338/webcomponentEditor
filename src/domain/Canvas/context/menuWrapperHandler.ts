@@ -4,15 +4,17 @@ import {
   mimimalResizingSize,
 } from "../../../utils/consts";
 import { convertElementToHTMLElement, isElement } from "../../../utils/dom";
-import { getElement } from "../../../utils/global";
+import { getElement, getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { Points } from "../view/x-image-wrapper";
+import { LocateClosestElementUtils } from "./elementDebugger";
 
 class MenuWrapperHandler {
   appContext: AppContext;
-
+  locateClosestElementUtils: LocateClosestElementUtils;
   constructor() {
     this.appContext = getAppContext();
+    this.locateClosestElementUtils = new LocateClosestElementUtils();
   }
 }
 
@@ -50,6 +52,7 @@ export class ImageWrapperHandler extends MenuWrapperHandler {
   }
 
   handleMouseUp() {
+    this.locateClosestElementUtils.hideBoxVis();
     const currentState = this.appContext.storage.getItem();
     this.appContext.undoManager.addAction(currentState);
     const originalMenuWrapperState = this.appContext.menuWrapperState;
@@ -61,6 +64,10 @@ export class ImageWrapperHandler extends MenuWrapperHandler {
   }
 
   handleMouseMove(event: MouseEvent) {
+    const selectedElement = this.appContext.selectedElement;
+    if (!selectedElement) return;
+    const info = getElementInfo(selectedElement);
+    this.locateClosestElementUtils.showInfo(info);
     switch (this.appContext.menuWrapperState.currentMenuWrapperHandlerId) {
       case Points.TOP_LEFT:
         this.resizeTopLeft(event);
