@@ -1,6 +1,6 @@
 import { APP_CONTEXT, testHTML } from "../../../utils/consts";
 import { getElement, getElementInfo } from "../../../utils/global";
-import { LocalStorage } from "../../Storage/LocalStorage";
+import { SessionStorage } from "../../Storage/SessionStorage";
 import { HTMLStorage } from "../../Storage/storage";
 import { UndoManager } from "../../UndoManager/undoManager";
 import { Boxvis } from "./type";
@@ -18,7 +18,7 @@ export class AppContext extends HTMLElement {
   scrollTimeout: any = null;
   scrollendDelay = 250;
   storage: HTMLStorage = new HTMLStorage(
-    new LocalStorage("canvas-html"),
+    new SessionStorage("canvas-html"),
     testHTML
   );
   isTextAndImageNotSelectable = true;
@@ -26,8 +26,19 @@ export class AppContext extends HTMLElement {
     noln: false,
     nobg: false,
   };
+
   canvasHtml: string = this.storage.getItem() ?? "";
   undoManager: UndoManager = new UndoManager();
+  menuWrapperState = {
+    isInvoked: false,
+    currentMenuWrapperHandlerId: "",
+    original_mouseX: 0,
+    original_mouseY: 0,
+    original_width: 0,
+    original_height: 0,
+    original_x: 0,
+    original_y: 0,
+  };
 
   constructor() {
     super();

@@ -15,10 +15,15 @@ const app = async () => {
     "./src/domain/Canvas/view/x-menu-wrapper"
   );
 
+  const { registerMenuImageWrapperComponent } = await import(
+    "./src/domain/Canvas/view/x-image-wrapper"
+  );
+
   registerAppContext();
   registerCanvasComponent();
   registerMenuWrapperComponent();
   registerMenuComponent();
+  registerMenuImageWrapperComponent();
 };
 
 document.addEventListener("DOMContentLoaded", app);

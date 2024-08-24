@@ -15,3 +15,13 @@ export const convertNodeToHTMLElement = (element: Node): HTMLElement => {
     );
   }
 };
+
+export const convertElementToHTMLElement = (element: Element): HTMLElement => {
+  if (isHTMLElement(element)) {
+    return element;
+  } else {
+    throw new Error(
+      "The provided Element is not an HTMLElement. It might lead to unexpected behavior."
+    );
+  }
+};

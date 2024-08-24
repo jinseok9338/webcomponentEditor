@@ -2,6 +2,7 @@ import {
   CANVAS,
   CANVAS_ELEMENT,
   MENU_ELEMENT,
+  MENU_IMAGE_WRAPPER_ELEMENT,
   MENU_WRAPPER_ELEMENT,
 } from "../../../utils/consts";
 import { convertNodeToHTMLElement, isElement } from "../../../utils/dom";
@@ -36,11 +37,7 @@ export class SelectElementUtils {
     const convertedClickedElement = convertNodeToHTMLElement(element);
     this.appContext.selectedElement = convertedClickedElement;
     const menuWrapper = document.createElement(MENU_WRAPPER_ELEMENT);
-    const originalElementComputedStyle = getComputedStyle(
-      convertedClickedElement
-    );
-    menuWrapper.style.width = originalElementComputedStyle.width;
-    menuWrapper.style.height = originalElementComputedStyle.height;
+
     const menuElement = document.createElement(MENU_ELEMENT);
     menuWrapper.appendChild(menuElement);
 
@@ -57,23 +54,27 @@ export class SelectElementUtils {
 
   removeMenuContainer() {
     const menuContainer = getElement(MENU_WRAPPER_ELEMENT);
+    if (!menuContainer) return;
     const menus = getElement(MENU_ELEMENT);
+    const menuImageWrapper = getElement(MENU_IMAGE_WRAPPER_ELEMENT);
     if (!menus) return;
-    menuContainer?.removeChild(menus);
+    menuContainer.removeChild(menus);
+    if (menuImageWrapper) {
+      menuContainer.removeChild(menuImageWrapper);
+    }
     const originalElement = menuContainer?.firstChild;
     if (!originalElement) return;
-    menuContainer?.parentNode?.insertBefore(originalElement, menuContainer);
-    menuContainer?.parentNode?.removeChild(menuContainer);
+    menuContainer.parentNode?.insertBefore(originalElement, menuContainer);
+    menuContainer.parentNode?.removeChild(menuContainer);
   }
 
   duplicateElement() {
     const element = this.appContext.selectedElement;
     if (!element) return;
-    // menu wrapper 때문에 실제 parent 는 parent.parent 이다.
-    const parentElement = element.parentElement?.parentElement;
+    this.clearSelectedElement();
+    const parentElement = element.parentElement;
     const duplicatedElement = element.cloneNode(true) as HTMLElement;
     parentElement?.appendChild(duplicatedElement);
-    this.clearSelectedElement();
     const CanvasElement = getElement(CANVAS_ELEMENT);
     if (!CanvasElement) return;
     this.appContext.storage.updateItem(CanvasElement.innerHTML);
@@ -81,13 +82,12 @@ export class SelectElementUtils {
   }
 
   removeElement() {
-    // menu wrapper 때문에 실제 parent 는 parent.parent 이다.
     const element = this.appContext.selectedElement;
     if (!element) return;
-    const parentElement = element.parentElement?.parentElement;
-    const realElement = element.parentElement;
-    if (!parentElement || !realElement) return;
-    parentElement?.removeChild(realElement);
+    this.clearSelectedElement();
+    const parentElement = element.parentElement;
+    if (!parentElement || !element) return;
+    parentElement?.removeChild(element);
     const CanvasElement = getElement(CANVAS_ELEMENT);
     if (!CanvasElement) return;
     this.appContext.storage.updateItem(CanvasElement.innerHTML);

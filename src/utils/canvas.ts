@@ -1,4 +1,5 @@
-import { MENU, MENU_CONTAINER, MENU_DRAG } from "./consts";
+import { Points } from "../domain/Canvas/view/x-image-wrapper";
+import { IMAGE_WRAPPER, MENU, MENU_CONTAINER, MENU_DRAG } from "./consts";
 import { isElement, isHTMLElement } from "./dom";
 
 export const convertToFramesAndComponents = (html: string) => {
@@ -203,6 +204,16 @@ export const isElementMenuContainer = (element: Element) => {
     return false;
   }
   return element.id === MENU_CONTAINER;
+};
+
+export const isElementImageWrapper = (element: Element) => {
+  return (
+    element.id === IMAGE_WRAPPER ||
+    element.id === Points.TOP_LEFT ||
+    element.id === Points.TOP_RIGHT ||
+    element.id === Points.BOTTOM_LEFT ||
+    element.id === Points.BOTTOM_RIGHT
+  );
 };
 
 export const isElementParentMenuContainer = (element: Element): boolean => {

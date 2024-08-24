@@ -4,6 +4,7 @@ import {
   isElementMenuContainer,
   isElementParentIsMenuGrabButton,
   isElementMenuGrabButton,
+  isElementImageWrapper,
 } from "../../../utils/canvas";
 import {
   CANVAS_ELEMENT,
@@ -16,6 +17,7 @@ import { isElement, isHTMLElement } from "../../../utils/dom";
 import { getElementInfo } from "../../../utils/global";
 import { AppContext, getAppContext } from "../../App/context/AppContext";
 import { LocateClosestElementUtils } from "../context/elementDebugger";
+import { ImageWrapperHandler } from "../context/menuWrapperHandler";
 import { MoveUpSelectedElementUtils } from "../context/moveElement";
 import { SelectElementUtils } from "../context/selectElement";
 
@@ -24,6 +26,7 @@ export class CanvasComponent extends HTMLElement {
   private locateClosestElementUtils: LocateClosestElementUtils;
   private moveUpSelectedElementUtils: MoveUpSelectedElementUtils;
   private appContext: AppContext;
+  private imageWrapperHandler: ImageWrapperHandler;
 
   constructor() {
     super();
@@ -32,12 +35,13 @@ export class CanvasComponent extends HTMLElement {
     this.moveUpSelectedElementUtils = new MoveUpSelectedElementUtils();
     this.appContext = getAppContext();
     this.locateClosestElementUtils.AddOutliners();
+    this.imageWrapperHandler = new ImageWrapperHandler();
 
     this.addEventListener("mousedown", this.onMouseDown.bind(this));
     this.addEventListener("mouseup", this.onMouseUp.bind(this));
     window.addEventListener("scroll", this.scrollHandler.bind(this));
     this.addEventListener("mouseout", this.mouseOutHandler.bind(this));
-    this.addEventListener("mousemove", this.mouseHandler.bind(this));
+    this.addEventListener("mousemove", this.mouseMove.bind(this));
     window.addEventListener("keydown", this.onKeyDown.bind(this));
   }
 
@@ -75,8 +79,13 @@ export class CanvasComponent extends HTMLElement {
     );
   }
 
-  mouseHandler(event: MouseEvent) {
+  mouseMove(event: MouseEvent) {
     const { clientX, clientY } = event;
+    if (this.appContext.menuWrapperState.isInvoked) {
+      this.imageWrapperHandler.handleMouseMove(event);
+      return;
+    }
+
     if (this.appContext.isDragging && this.appContext.selectedElement) {
       this.moveUpSelectedElementUtils.findTheClosestBorderAndMarkIt(
         clientX,
@@ -93,15 +102,23 @@ export class CanvasComponent extends HTMLElement {
     }
     const info = getElementInfo(target);
     this.appContext.latestInfo = info;
-    if (
-      target === this.appContext.selectedElement ||
-      isElementParentIsMenu(this.appContext.latestInfo.element) ||
-      isElementMenu(this.appContext.latestInfo.element) ||
-      isElementMenuContainer(this.appContext.latestInfo.element)
-    ) {
+    if (this.isElementNotDebuggable(target, this.appContext.latestInfo)) {
       return;
     }
     this.locateClosestElementUtils.showInfo(info);
+  }
+
+  isElementNotDebuggable(
+    target: HTMLElement,
+    info: ReturnType<typeof getElementInfo>
+  ) {
+    return (
+      // target === this.appContext.selectedElement ||
+      isElementParentIsMenu(info.element) ||
+      isElementMenu(info.element) ||
+      isElementMenuContainer(info.element) ||
+      isElementImageWrapper(info.element)
+    );
   }
 
   onMouseDown(event: MouseEvent) {
@@ -111,22 +128,27 @@ export class CanvasComponent extends HTMLElement {
       return;
     }
 
-    if (!event.target) {
+    // mouse event 에 타겟이 없는 경우
+    if (!event.target || !isElement(event.target)) {
+      console.error("target is not element");
       return;
     }
 
+    // 메뉴를 선택한 경우
     if (
-      (event.target as HTMLElement).id === MENU_GO_UP ||
-      (event.target as HTMLElement).id === MENU_DUPLICATE ||
-      (event.target as HTMLElement).id === MENU_DELETE ||
-      (event.target as HTMLElement).id === MENU_MORE
+      event.target.id === MENU_GO_UP ||
+      event.target.id === MENU_DUPLICATE ||
+      event.target.id === MENU_DELETE ||
+      event.target.id === MENU_MORE
     ) {
       return;
     }
 
-    if (!isElement(event.target)) {
+    if (this.appContext.menuWrapperState.isInvoked) {
       return;
     }
+
+    // 메뉴 중 옮기는 메뉴를 선택한 경우
     if (
       isElementParentIsMenuGrabButton(event.target) ||
       isElementMenuGrabButton(event.target)
@@ -136,10 +158,23 @@ export class CanvasComponent extends HTMLElement {
       event.preventDefault();
       return;
     }
+
+    // wrapping element 의 handler 를 선택한 경우
+    if (this.isElementMenuHandler(event.target)) {
+      this.imageWrapperHandler.handleMouseDown(event);
+      return;
+    }
+
+    // 선택된 element 가 있는데 다른 element 을 선택한 경우
     if (this.appContext.selectedElement !== event.target) {
       this.appContext.isDragging = false;
       this.selectElementUtils.selectElementWithClick(event);
+      return;
     }
+  }
+
+  isElementMenuHandler(target: Element) {
+    return isElementImageWrapper(target);
   }
 
   onMouseUp(event: MouseEvent) {
@@ -154,6 +189,10 @@ export class CanvasComponent extends HTMLElement {
       this.selectElementUtils.clearSelectedElement();
     }
     this.appContext.closestBorder = null;
+
+    if (this.appContext.menuWrapperState.isInvoked) {
+      this.imageWrapperHandler.handleMouseUp(event);
+    }
     event.preventDefault();
   }
 }
