@@ -74,7 +74,7 @@ export class SelectElementUtils {
     this.clearSelectedElement();
     const parentElement = element.parentElement;
     const duplicatedElement = element.cloneNode(true) as HTMLElement;
-    parentElement?.appendChild(duplicatedElement);
+    parentElement?.insertBefore(duplicatedElement, element);
     const CanvasElement = getElement(CANVAS_ELEMENT);
     if (!CanvasElement) return;
     this.appContext.storage.updateItem(CanvasElement.innerHTML);

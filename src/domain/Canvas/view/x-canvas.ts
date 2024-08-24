@@ -102,18 +102,18 @@ export class CanvasComponent extends HTMLElement {
     }
     const info = getElementInfo(target);
     this.appContext.latestInfo = info;
-    if (this.isElementNotDebuggable(target, this.appContext.latestInfo)) {
+    if (this.isElementNotDebuggable(event.target, this.appContext.latestInfo)) {
       return;
     }
     this.locateClosestElementUtils.showInfo(info);
   }
 
   isElementNotDebuggable(
-    target: HTMLElement,
+    target: EventTarget | null,
     info: ReturnType<typeof getElementInfo>
   ) {
     return (
-      // target === this.appContext.selectedElement ||
+      target === this.appContext.selectedElement ||
       isElementParentIsMenu(info.element) ||
       isElementMenu(info.element) ||
       isElementMenuContainer(info.element) ||
@@ -191,7 +191,7 @@ export class CanvasComponent extends HTMLElement {
     this.appContext.closestBorder = null;
 
     if (this.appContext.menuWrapperState.isInvoked) {
-      this.imageWrapperHandler.handleMouseUp(event);
+      this.imageWrapperHandler.handleMouseUp();
     }
     event.preventDefault();
   }

@@ -49,7 +49,7 @@ export class ImageWrapperHandler extends MenuWrapperHandler {
     };
   }
 
-  handleMouseUp(event: MouseEvent) {
+  handleMouseUp() {
     const currentState = this.appContext.storage.getItem();
     this.appContext.undoManager.addAction(currentState);
     const originalMenuWrapperState = this.appContext.menuWrapperState;

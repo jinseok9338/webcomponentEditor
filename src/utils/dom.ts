@@ -25,3 +25,27 @@ export const convertElementToHTMLElement = (element: Element): HTMLElement => {
     );
   }
 };
+
+export const isElementText = (element: Element): element is HTMLElement => {
+  // TEXTAREA, INPUT, TEXT, P, SPAN, H1, H2, H3, H4, H5, H6, LI, UL, OL, DL, BLOCKQUOTE, PRE, CODE
+  return (
+    element.tagName === "TEXTAREA" ||
+    element.tagName === "INPUT" ||
+    element.tagName === "TEXT" ||
+    element.tagName === "P" ||
+    element.tagName === "SPAN" ||
+    element.tagName === "H1" ||
+    element.tagName === "H2" ||
+    element.tagName === "H3" ||
+    element.tagName === "H4" ||
+    element.tagName === "H5" ||
+    element.tagName === "H6" ||
+    element.tagName === "LI" ||
+    element.tagName === "UL" ||
+    element.tagName === "OL" ||
+    element.tagName === "DL" ||
+    element.tagName === "BLOCKQUOTE" ||
+    element.tagName === "PRE" ||
+    element.tagName === "CODE"
+  );
+};
